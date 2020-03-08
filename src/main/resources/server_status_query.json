@@ -1,0 +1,29 @@
+{
+  "size": 0,
+  "aggs": {
+    "1": {
+      "cardinality": {
+        "field": "system.process.id"
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "must": [
+        {"query_string":  {
+          "query": "%s",
+          "analyze_wildcard": true,
+          "default_field": "*"
+          }
+        },
+        {
+          "range": {
+            "@timestamp": {
+              "gte": "now-1m"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -96,15 +96,22 @@ public class ESLowLevelRepo {
         return resp;
     }
 
-//    public getStatusByProcessAndUser(String hostname,String process, String userName){
-//        String queryStr = String.format("beat.hostname: %s AND system.process.name: %s and system.process.username: %s", hostname,process,userName);
-//
-//    }
+    public Integer getCountByProcessNameAndUser(String hostname,String process, String userName){
+        String queryStr = String.format("beat.hostname: %s AND system.process.name: %s and system.process.username: %s", hostname,process,userName);
+        return  getHostCount(queryStr);
+    }
 
-    public Integer getServerStatusCode() {
+    public Integer getCountByCmdLine(String hostname,String process, String cmdLine){
+        String queryStr = String.format("beat.hostname: %s AND system.process.cmdline: %s and system.process.cmdline: *%s*", hostname,process,cmdLine);
+        return  getHostCount(queryStr);
+    }
+
+    public Integer getHostCount(String queryString) {
 
         try {
-            entity = new NStringEntity(Utility.asString(server_status_query), ContentType.APPLICATION_JSON);
+            String queryFormat = Utility.asString(server_status_query);
+            String query_string = String.format(queryFormat, queryString);
+            entity = new NStringEntity(query_string, ContentType.APPLICATION_JSON);
             Request req = new Request("Get", String.format("%s/_search", entity));
             req.addParameter("pretty", "true");
             Response resp = client.performRequest(req);
